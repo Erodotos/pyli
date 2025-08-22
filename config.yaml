@@ -9,7 +9,7 @@ server:
 routes:
   - serviceName: user-service
     path: /api/users/
-    endpoint: jsonplaceholder.typicode.com
+    endpoint: https://jsonplaceholder.typicode.com
 
   - serviceName: order-service
     path: /api/orders/
@@ -17,4 +17,4 @@ routes:
 
   - serviceName: dummy-service
     path: /api/dummy/
-    endpoint: dummyjson.com
+    endpoint: https://dummyjson.com

@@ -16,8 +16,6 @@ func main() {
 		log.Fatal("Failed to load config:", err)
 	}
 
-	fmt.Println(cfg)
-
 	mux := router.NewRouter(cfg)
 
 	log.Printf("Starting API Gateway on port %d\n", cfg.Server.Port)

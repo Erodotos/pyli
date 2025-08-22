@@ -2,11 +2,12 @@ package proxy
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
-	"strings"
+	"regexp"
 )
 
 func NewProxy(serviceEndpoint string) *httputil.ReverseProxy {
@@ -23,26 +24,25 @@ func NewProxy(serviceEndpoint string) *httputil.ReverseProxy {
 				}
 			}
 
+			incommingPath := req.URL.Path
+
+			var path string
+			re := regexp.MustCompile(`^/api/[a-zA-Z]+/(.*)$`)
+			matches := re.FindStringSubmatch(req.URL.Path)
+			fmt.Println(matches)
+			if len(matches) > 1 {
+				path = "/" + matches[1]
+			} else {
+				path = ""
+			}
+
 			req.URL.Scheme = endpointURL.Scheme
 			req.URL.Host = endpointURL.Host
 			req.Host = endpointURL.Host
+			req.URL.Path = path
 
-			// Remove "/api" prefix from incoming request path, then join with basePath
-			path := strings.TrimPrefix(req.URL.Path, "/api")
-			// Ensure no double slashes when joining paths
-			if !strings.HasSuffix(endpointURL.Path, "/") && !strings.HasPrefix(path, "/") {
-				req.URL.Path = endpointURL.Path + "/" + path
-			} else {
-				req.URL.Path = endpointURL.Path + path
-			}
-
-			// 🔎 Log outgoing request details
-			log.Printf("[Forwarding] %s %s://%s%s", req.Method, req.URL.Scheme, req.URL.Host, req.URL.Path)
-			for name, values := range req.Header {
-				for _, v := range values {
-					log.Printf("  %s: %s", name, v)
-				}
-			}
+			// Log outgoing request details
+			log.Printf("[Forwarding] %s %s --> %s://%s%s", req.Method, incommingPath, req.URL.Scheme, req.URL.Host, req.URL.Path)
 		},
 		ErrorHandler: func(w http.ResponseWriter, req *http.Request, err error) {
 			log.Printf("[Error] %v", err)
