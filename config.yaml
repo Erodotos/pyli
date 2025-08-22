@@ -1,0 +1,20 @@
+# Gateway server settings
+server:
+  port: 8080
+  read_timeout: 5s
+  write_timeout: 10s
+
+# Routes configuration. All routes shall
+# start with the prefix "api"
+routes:
+  - serviceName: user-service
+    path: /api/users/
+    endpoint: jsonplaceholder.typicode.com
+
+  - serviceName: order-service
+    path: /api/orders/
+    endpoint: localhost
+
+  - serviceName: dummy-service
+    path: /api/dummy/
+    endpoint: dummyjson.com
