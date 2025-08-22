@@ -5,23 +5,36 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
 	"strings"
 )
 
-func NewProxy(serviceEndpointMap map[string]string) *httputil.ReverseProxy {
+func NewProxy(serviceEndpoint string) *httputil.ReverseProxy {
 	proxy := &httputil.ReverseProxy{
 		Director: func(req *http.Request) {
-			trimmed := strings.TrimPrefix(req.URL.Path, "/api/")
-			parts := strings.SplitN(trimmed, "/", 2)
-			path := ""
-			if len(parts) > 1 {
-				path = "/" + parts[1]
+			// Parse the serviceEndpoint into scheme, host, and path
+			endpointURL, err := url.Parse(serviceEndpoint)
+			if err != nil {
+				log.Printf("Error parsing service endpoint %s: %v. Fallback to http://localhost", serviceEndpoint, err)
+				endpointURL = &url.URL{
+					Scheme: "http",
+					Host:   "localhost",
+					Path:   "",
+				}
 			}
 
-			req.URL.Scheme = "https"
-			req.URL.Host = serviceEndpointMap["/api/"+parts[0]+"/"]
-			req.Host = serviceEndpointMap["/api/"+parts[0]+"/"]
-			req.URL.Path = path
+			req.URL.Scheme = endpointURL.Scheme
+			req.URL.Host = endpointURL.Host
+			req.Host = endpointURL.Host
+
+			// Remove "/api" prefix from incoming request path, then join with basePath
+			path := strings.TrimPrefix(req.URL.Path, "/api")
+			// Ensure no double slashes when joining paths
+			if !strings.HasSuffix(endpointURL.Path, "/") && !strings.HasPrefix(path, "/") {
+				req.URL.Path = endpointURL.Path + "/" + path
+			} else {
+				req.URL.Path = endpointURL.Path + path
+			}
 
 			// 🔎 Log outgoing request details
 			log.Printf("[Forwarding] %s %s://%s%s", req.Method, req.URL.Scheme, req.URL.Host, req.URL.Path)
