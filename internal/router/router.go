@@ -2,7 +2,6 @@ package router
 
 import (
 	"api-gateway/internal/config"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -20,7 +19,6 @@ func RegisterRoutes(mux *http.ServeMux, config config.Config) {
 		log.Printf("Registering route: %s", route.Path)
 		proxy := proxy.NewProxy(route.Endpoint)
 		mux.HandleFunc(route.Path, func(w http.ResponseWriter, r *http.Request) {
-			fmt.Println(route.Path)
 			proxy.ServeHTTP(w, r)
 		})
 	}
