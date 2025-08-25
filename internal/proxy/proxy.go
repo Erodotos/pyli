@@ -2,7 +2,6 @@ package proxy
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -29,7 +28,6 @@ func NewProxy(serviceEndpoint string) *httputil.ReverseProxy {
 			var path string
 			re := regexp.MustCompile(`^/api/[a-zA-Z]+/(.*)$`)
 			matches := re.FindStringSubmatch(req.URL.Path)
-			fmt.Println(matches)
 			if len(matches) > 1 {
 				path = "/" + matches[1]
 			} else {
@@ -43,6 +41,13 @@ func NewProxy(serviceEndpoint string) *httputil.ReverseProxy {
 
 			// Log outgoing request details
 			log.Printf("[Forwarding] %s %s --> %s://%s%s", req.Method, incommingPath, req.URL.Scheme, req.URL.Host, req.URL.Path)
+		},
+		ModifyResponse: func(resp *http.Response) error {
+			// 🔎 Remove backend rate-limit headers
+			resp.Header.Del("X-RateLimit-Limit")
+			resp.Header.Del("X-RateLimit-Remaining")
+			resp.Header.Del("X-RateLimit-Reset")
+			return nil
 		},
 		ErrorHandler: func(w http.ResponseWriter, req *http.Request, err error) {
 			log.Printf("[Error] %v", err)
