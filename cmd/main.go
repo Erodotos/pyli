@@ -22,6 +22,7 @@ func main() {
 
 	// Add Middleware
 	mw := middleware.RateLimit(mux, cfg)
+	mw = middleware.VerifyToken(mw, cfg)
 
 	log.Printf("Starting API Gateway on port %d\n", cfg.Server.Port)
 	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Server.Port), mw)
