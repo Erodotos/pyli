@@ -5,17 +5,23 @@ server:
   write_timeout: 10s
   rpmLimit: 5
 
+# Json Web Token Server Secret
+JwtSecret: "server-secret-key"
+
 # Routes configuration. All routes shall
 # start with the prefix "api"
 routes:
   - serviceName: user-service
     path: /api/users/
     endpoint: https://jsonplaceholder.typicode.com
+    method: GET
 
   - serviceName: order-service
     path: /api/orders/
     endpoint: localhost
+    method: GET
 
   - serviceName: dummy-service
     path: /api/dummy/
     endpoint: https://dummyjson.com
+    method: GET
