@@ -10,17 +10,17 @@
 This is a lightweight API Gateway written in Go, supporting route registration, request proxying, rate limiting, and JWT-based authentication. It’s a toy project built to explore the fundamentals of API gateway design. The gateway is configured through a `config.yaml` file, loaded on startup, which defines key settings such as the listening port, registered routes with their corresponding endpoints, request rate limits, etc.
 
 ## Api Gateway Components
-![api-gateway](./api-gateway.png)
+![api-gateway](./assets/api-gateway.png)
 1. Middleware
     1. Ratelimiter
-    ![rate-limiter](./rate-limiter.png)
+    ![rate-limiter](./assets/rate-limiter.png)
     2. Authentication
 2. Routes
     1. Protected Routes - `/api/dummy/test`
     2. Unprotected Routes - `/api/login`
 3. Handlers
     1. JWT Authentication
-    ![jwt](./jwt.png)
+    ![jwt](./assets/jwt.png)
     2. Proxy
 
 ## Demo
