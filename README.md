@@ -22,7 +22,3 @@ This is a lightweight API Gateway written in Go, supporting route registration, 
     1. JWT Authentication
     ![jwt](./assets/jwt.png)
     2. Proxy
-
-## Demo
-
-[![Demo Video](https://i.imgur.com/nAh3eXT.png)](https://www.youtube.com/watch?v=zcMfjyWxQZ0)
