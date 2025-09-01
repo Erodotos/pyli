@@ -1,10 +1,5 @@
 # Pyli: A lightweight API Gateway written in Go
 
-<p align="center">
-     <img src="https://repository-images.githubusercontent.com/234231371/00fd8700-5430-11ea-820b-15fd85b2472c" width="250">
-     <img src="https://github.com/kubernetes/kubernetes/raw/master/logo/logo.png" width="100">
-</p>
-
 ## Table of contents
 
 1. [Introduction](#introduction)
